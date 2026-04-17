@@ -4,7 +4,7 @@ library(dplyr)
 library(ggpubr)
 
 # === Import data ===
-df <- read.csv("Shannon_gyrA.csv")
+df <- read.csv("Figure 2/Shannon/Shannon_gyrA.csv")
 
 # Preserve the order of factor levels
 df$richness <- factor(df$richness, levels = unique(df$richness))
@@ -35,4 +35,20 @@ p <- ggplot(df, aes(x = richness, y = Shannon)) +
   ylim(4, 7)
 
 # === Save figure as PDF ===
-ggsave("Shannon_gyrA.pdf", plot = p, device = "pdf", width = 6, height = 5, units = "in")
+# 检查根目录下是否有 output 文件夹，没有则创建一个
+if (!dir.exists(here("output"))) {
+  dir.create(here("output"), recursive = TRUE)
+}
+
+# 保存 PDF 到 根目录/output/ 文件夹中
+ggsave(
+  filename = here("output", "Shannon_gyrA.pdf"), 
+  plot = p, 
+  device = "pdf", 
+  width = 8, 
+  height = 6, 
+  units = "in"
+)
+
+# 打印一条成功消息
+message("图片已成功保存至: ", here("output", "Shannon_gyrA.pdf"))

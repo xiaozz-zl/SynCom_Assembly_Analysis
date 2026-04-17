@@ -1,5 +1,5 @@
 # === Load data ===
-df <- read.csv("shoot dry weight.csv")
+df <- read.csv("Figure 4/Shoot dry weight/shoot dry weight.csv")
 
 # === Load required packages ===
 library(ggplot2)
@@ -69,4 +69,20 @@ p <- ggplot(df, aes(x = richness, y = shoot_dry_weight, fill = richness)) +
   ylim(0, y_max)
 
 # === Save as PDF file ===
-ggsave("shoot dry weight.pdf", plot = p, device = "pdf", width = 8, height = 6, units = "in")
+# 检查根目录下是否有 output 文件夹，没有则创建一个
+if (!dir.exists(here("output"))) {
+  dir.create(here("output"), recursive = TRUE)
+}
+
+# 保存 PDF 到 根目录/output/ 文件夹中
+ggsave(
+  filename = here("output", "shoot dry weight.pdf"), 
+  plot = p, 
+  device = "pdf", 
+  width = 8, 
+  height = 6, 
+  units = "in"
+)
+
+# 打印一条成功消息
+message("图片已成功保存至: ", here("output", "shoot dry weight.pdf"))
