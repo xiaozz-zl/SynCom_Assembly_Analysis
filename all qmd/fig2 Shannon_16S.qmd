@@ -1,0 +1,91 @@
+---
+title: "16S rRNA 细菌群落多样性分析报告"
+format: html
+---
+
+## 1. 指标定义：Shannon 指数
+[cite_start]**Shannon 指数** 是衡量微生物 α-多样性的核心指标 [cite: 40]。它不仅反映了群落中物种的数量（丰富度），还考虑了各物种分布的均匀程度。
+
+
+## 2. 处理组别说明
+本研究共对比了五个处理组：
+* [cite_start]**NS_1w**: 短期（1周）处理组 [cite: 45]。
+* [cite_start]**NS / SS**: 两种不同背景土壤的对照组 [cite: 46, 48]。
+* [cite_start]**NS_SQR9 / SS_SQR9**: 在对应土壤中接种 SQR9 菌株的处理组 [cite: 47, 49]。
+
+## 3. 结果解读
+
+### 3.1 多样性水平观测
+* [cite_start]**数值范围**：所有样本的 Shannon 指数主要分布在 **4.0 到 7.0** 之间 [cite: 41, 42, 43, 44]。
+* **群落特征**：
+    * [cite_start]**NS 组**：在不添加外源菌株的情况下，展示了该土壤背景下基准的细菌多样性水平 [cite: 46]。
+    * [cite_start]**SQR9 接种效应**：通过对比 **NS vs NS_SQR9** 以及 **SS vs SS_SQR9**，可以观察到外源功能菌株 SQR9 的引入对整体细菌群落结构的扰动作用 [cite: 46, 47, 48, 49]。通常情况下，强效功能菌的定殖可能会降低土著菌群的均匀度，从而导致 Shannon 指数的小幅下降。
+
+### 3.2 16S 与 gyrA 的对比逻辑
+* **广度 vs 深度**：16S rRNA 数据代表了“谁在那儿”（整体分类学组成），而您之前看到的 `gyrA` 则侧重于“能做什么”（特定功能基因的多样性）。
+* **稳定性**：总细菌群落（16S）通常比特定功能群落（gyrA）具有更强的缓冲能力，因此其 Shannon 指数的波动可能相对较小。
+
+## 4. 结论与科学启示
+1.  [cite_start]**环境驱动**：土壤背景（NS 与 SS）是决定细菌多样性的基础因素 [cite: 46, 48]。
+2.  [cite_start]**管理干预**：SQR9 的添加改变了原有的群落平衡 [cite: 47, 49]。这在生物防治或促生研究中是常见的现象，即通过调整群落结构来发挥特定菌株的功能。
+
+## 5.分析代码
+
+```{r}
+# === Load required packages ===
+library(here)
+library(ggplot2)
+library(dplyr)
+library(ggpubr)
+
+# === Import data ===
+df <- read.csv("Figure 2/Shannon/Shannon_16S.csv")
+
+# Preserve the order of factor levels
+df$richness <- factor(df$richness, levels = unique(df$richness))
+
+# # Color palette option 1: F7BABA tones
+my_colors <- c("#ffffff", "#fdeeee", "#fbdcdc", "#f9cbcb", "#f7baba")
+
+
+# === Plot boxplot without significance annotations ===
+p <- ggplot(df, aes(x = richness, y = Shannon)) +
+  geom_boxplot(aes(fill = richness), width = 1, outlier.shape = NA, color = "black") +
+  geom_jitter(size = 3, alpha = 0.7, color = "black", width = 0.3) +
+  scale_fill_manual(values = my_colors) +
+  scale_color_manual(values = my_colors) +
+  theme_bw(base_size = 14) +
+  theme(
+    legend.position = "none",
+    axis.title.x = element_blank(),
+    axis.title.y = element_text(size = 20, face = "plain"),
+    axis.text = element_text(size = 18),
+    panel.border = element_rect(color = "black", linewidth = 1.2, fill = NA),
+    axis.ticks = element_line(linewidth = 1.2),
+    axis.ticks.length = unit(0.3, "cm"),
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank()
+  ) +
+  labs(y = "Shannon diversity") +
+  ylim(4, 7)
+
+# === Save figure as PDF ===
+# 检查根目录下是否有 output 文件夹，没有则创建一个
+if (!dir.exists(here("output"))) {
+  dir.create(here("output"), recursive = TRUE)
+}
+
+# 保存 PDF 到 根目录/output/ 文件夹中
+ggsave(
+  filename = here("output", "Shannon_16S.pdf"), 
+  plot = p, 
+  device = "pdf", 
+  width = 8, 
+  height = 6, 
+  units = "in"
+)
+
+# 打印一条成功消息
+message("图片已成功保存至: ", here("output", "Shannon_16S.pdf"))
+```
+
