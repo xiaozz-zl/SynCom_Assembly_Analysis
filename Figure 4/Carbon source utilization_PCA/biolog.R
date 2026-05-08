@@ -2,7 +2,7 @@ library(vegan)
 library(ggpubr)
 
 # Read the Biolog data table
-x = read.table(file="biolog.txt", sep="\t", header=TRUE, row.names=1)
+x = read.table(file="Figure 4/Carbon source utilization_PCA/biolog.txt", sep="\t", header=TRUE, row.names=1)
 
 # Perform redundancy analysis (RDA), or optionally principal components analysis (PCA)
 x.pca = rda(x)
@@ -18,18 +18,23 @@ a = outputpca$species ; a
 # Extract explained variance (importance of components)
 b = outputpca$cont$importance ; b
 
+# Create output directory if it doesn't exist
+if (!dir.exists("output")) {
+  dir.create("output")
+}
+
 # Save species scores and explained variance to files
-write.table(a, file="PCA_site.txt", sep="\t", col.names = NA)
-write.table(b, file="PCA_evale.txt", sep="\t", col.names = NA)
+write.table(a, file="output/PCA_site.txt", sep="\t", col.names = NA)
+write.table(b, file="output/PCA_evale.txt", sep="\t", col.names = NA)
 
 # Save the full PCA summary output to a text file
-sink("PCA.txt")
+sink("output/PCA.txt")
 outputpca
 sink()
 
 # Manually assign groups for different treatments to enable grouping and coloring in plots
 # The grouped file should be prepared in advance
-y = read.table("PCA_site_group.txt", header = TRUE, row.names = 1)
+y = read.table("Figure 4/Carbon source utilization_PCA/PCA_site_group.txt", header = TRUE, row.names = 1)
 head(y)
 
 # Load plotting libraries
@@ -58,10 +63,20 @@ plot.theme = theme(
 )
 
 # Plot PCA result
-ggplot(y, aes(PC1, PC2, colour = group1)) +
+p <- ggplot(y, aes(PC1, PC2, colour = group1)) +
   geom_point(aes(shape = group2), size = 5) +
   scale_shape_manual(values = c(15, 16, 17, 3, 4, 18, 25, 7, 8, 9, 10, 11)) + # Customize point shapes
   scale_color_manual(values = c("#9932CC", "#CCFF99", "#BDB76B", "#CD5C5C", "#669933", 
                                 "#996600", "#6495ED", "#A52A2A")) +
-  geom_hline(yintercept = 0.08, linetype = 2, color = "grey", size =_
-             
+  geom_hline(yintercept = 0, linetype = 2, color = "grey", size = 0.5) +
+  geom_vline(xintercept = 0, linetype = 2, color = "grey", size = 0.5) +
+  labs(x = paste("PC1 (", pc1*100, "%)", sep = ""),
+       y = paste("PC2 (", pc2*100, "%)", sep = "")) +
+  plot.theme
+
+# Display the plot
+print(p)
+
+# Save the plot to output folder
+ggsave("output/biolog_PCA.pdf", plot = p, width = 10, height = 8)
+ggsave("output/biolog_PCA.png", plot = p, width = 10, height = 8, dpi = 300)

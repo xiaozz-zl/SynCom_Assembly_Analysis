@@ -2,7 +2,7 @@
 rm(list = ls())
 
 # === Load data ===
-df <- read.csv("4-MR.csv")
+df <- read.csv("Figure 4/4-MR/4-MR.csv")
 
 # === Check column names ===
 colnames(df)
