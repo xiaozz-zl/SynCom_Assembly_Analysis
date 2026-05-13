@@ -19,6 +19,14 @@
 本项目基于 2025 年发表于 **iMeta** 杂志的科研成果进行复现研究。
      关于本项目复现结果的解读均保存在all qmd文件夹中
 *   **论文标题**：*Bacterial social interactions in synthetic Bacillus consortia enhance plant growth*（合成芽孢杆菌菌群中的细菌社会互作促进植物生长）
+*   官方链接与 DOI
+DOI (数字对象标识符): 10.1186/s40168-021-01103-0
+
+文章官方链接 (Springer Link/Microbiome):
+https://microbiomejournal.biomedcentral.com/articles/10.1186/s40168-021-01103-0
+
+PubMed 链接:
+https://pubmed.ncbi.nlm.nih.gov/34289895/
 *   **核心科学问题**：探索不同亲缘关系的芽孢杆菌如何通过社会互作（Social Interactions）组装成合成菌群（SynComs），以及这些互作如何协同促进黄瓜生长。
 *   **复现基础**：
     *   **数据公开**：测序数据已托管至 NCBI (**PRJNA879238**, **PRJNA1248407**)。
